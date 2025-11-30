@@ -1,0 +1,7 @@
+{
+  "name": "RideSafe Standards AI",
+  "description": "An AI-powered educational platform for international amusement attraction safety standards (ASTM, ISO, EN).",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
