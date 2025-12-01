@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { POPULAR_STANDARDS } from '../constants';
 import StandardCard from './StandardCard';
 import { Standard } from '../types';
-import { Filter } from 'lucide-react';
 
 interface BrowseProps {
   onSelectStandard: (standard: Standard) => void;

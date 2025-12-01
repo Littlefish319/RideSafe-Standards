@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { INDUSTRY_NEWS } from '../constants';
-import { Newspaper, Calendar, ArrowUpRight, Tag, Filter } from 'lucide-react';
+import { Newspaper, Calendar, Tag } from 'lucide-react';
 
 const News: React.FC = () => {
   const [filterType, setFilterType] = useState<string>('All');
