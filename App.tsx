@@ -7,7 +7,7 @@ import Events from './components/Events';
 import News from './components/News';
 import StandardModal from './components/StandardModal';
 import { ViewState, Standard } from './types';
-import { RollerCoaster, Search, Menu, X, BookOpen, Info, Scale, CalendarDays, Newspaper } from 'lucide-react';
+import { RollerCoaster, Search, Menu, X, BookOpen, Info, Scale, CalendarDays, Newspaper, Copyright } from 'lucide-react';
 
 const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<ViewState>('home');
@@ -271,8 +271,16 @@ const App: React.FC = () => {
               </ul>
             </div>
           </div>
-          <div className="mt-12 pt-8 border-t border-slate-800 text-center text-xs text-slate-600">
-            &copy; {new Date().getFullYear()} RideSafe AI. All rights reserved. Not affiliated with ASTM, ISO, or CEN.
+          <div className="mt-12 pt-8 border-t border-slate-800 text-center text-xs">
+            <p className="font-semibold text-slate-300 mb-2 flex items-center justify-center gap-1">
+              <Copyright className="w-3 h-3" /> 
+              {new Date().getFullYear()} RideSafe AI. Created by Xiaoyu Tang. All Rights Reserved.
+            </p>
+            <p className="text-slate-600 max-w-2xl mx-auto mb-2">
+              This application, its design, code structure, and original content are the intellectual property of Xiaoyu Tang. 
+              Unauthorized reproduction, redistribution, or cloning of this work is strictly prohibited.
+            </p>
+            <p className="text-slate-700">Not affiliated with ASTM, ISO, or CEN.</p>
           </div>
         </div>
       </footer>
