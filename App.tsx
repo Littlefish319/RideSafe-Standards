@@ -7,7 +7,7 @@ import Events from './components/Events';
 import News from './components/News';
 import StandardModal from './components/StandardModal';
 import { ViewState, Standard } from './types';
-import { RollerCoaster, Search, Menu, X, BookOpen, Info, Scale, CalendarDays, Newspaper, Copyright } from 'lucide-react';
+import { RollerCoaster, Search, Menu, X, BookOpen, Info, Scale, CalendarDays, Newspaper, Copyright, CheckCircle2 } from 'lucide-react';
 
 const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<ViewState>('home');
@@ -280,7 +280,14 @@ const App: React.FC = () => {
               This application, its design, code structure, and original content are the intellectual property of Xiaoyu Tang. 
               Unauthorized reproduction, redistribution, or cloning of this work is strictly prohibited.
             </p>
-            <p className="text-slate-700">Not affiliated with ASTM, ISO, or CEN.</p>
+            <div className="flex items-center justify-center gap-4 mt-4">
+                 <p className="text-slate-700">Not affiliated with ASTM, ISO, or CEN.</p>
+                 <span className="text-slate-800">•</span>
+                 <p className="text-green-600 flex items-center gap-1 font-mono">
+                    <CheckCircle2 className="w-3 h-3" />
+                    System Online
+                 </p>
+            </div>
           </div>
         </div>
       </footer>
