@@ -1,8 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
-import './index.css';
-import 'leaflet/dist/leaflet.css';
+
+// NOTE: CSS is loaded via CDN in index.html for browser compatibility.
+// Do not import './index.css' here as it crashes the preview environment.
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {

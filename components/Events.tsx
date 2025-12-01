@@ -50,8 +50,7 @@ const Events: React.FC = () => {
         });
         
         // Fix Leaflet icon issue
-        // @ts-ignore
-        if (!L.Icon.Default.prototype._iconUrlFixed) {
+        try {
             // @ts-ignore
             delete L.Icon.Default.prototype._getIconUrl;
             L.Icon.Default.mergeOptions({
@@ -59,11 +58,9 @@ const Events: React.FC = () => {
                 iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
                 shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
             });
-            // @ts-ignore
-            L.Icon.Default.prototype._iconUrlFixed = true;
-        }
+        } catch(e) { /* ignore in some envs */ }
 
-        // Force resize to prevent gray box rendering issues
+        // Fix grey box
         setTimeout(() => {
             if (mapInstance.current) {
                 mapInstance.current.invalidateSize();
@@ -99,7 +96,6 @@ const Events: React.FC = () => {
         setUserLocation([latitude, longitude]);
         
         if (mapInstance.current) {
-          // Remove previous user marker if it exists (optional, keeping simple here)
           L.circleMarker([latitude, longitude], {
             radius: 8,
             fillColor: "#3b82f6",
@@ -116,33 +112,11 @@ const Events: React.FC = () => {
       },
       (error) => {
         setIsLocating(false);
-        console.error("Geolocation error details:", error.message);
-        
         let msg = "Unable to retrieve your location.";
-        
-        if (error.message.includes("Origin does not have permission")) {
-            msg = "Location access is blocked by the browser or environment policy. Ensure you are using HTTPS.";
-        } else {
-            switch(error.code) {
-                case error.PERMISSION_DENIED:
-                    msg = "Location permission denied. Please enable location services in your browser settings.";
-                    break;
-                case error.POSITION_UNAVAILABLE:
-                    msg = "Location information is unavailable. Check your network connection.";
-                    break;
-                case error.TIMEOUT:
-                    msg = "The request to get user location timed out.";
-                    break;
-                default:
-                    msg = error.message || "An unknown error occurred.";
-            }
+        if (error.message && error.message.includes("Origin")) {
+             msg = "Permission blocked. This feature requires a secure context (HTTPS) or explicitly allowed permission.";
         }
         setPermissionError(msg);
-      },
-      {
-          enableHighAccuracy: true,
-          timeout: 10000,
-          maximumAge: 0
       }
     );
   };
@@ -186,7 +160,7 @@ const Events: React.FC = () => {
                 onClick={() => {
                     if (mapInstance.current) {
                         mapInstance.current.invalidateSize();
-                        mapInstance.current.setView([35, -40], 2);
+                        mapInstance.current.setView([35, -40], 3);
                     }
                 }}
                 className="bg-white p-3 rounded-full shadow-lg text-slate-700 hover:text-blue-600 transition-colors border border-slate-200"
@@ -205,7 +179,7 @@ const Events: React.FC = () => {
         </div>
         
         {permissionError && (
-            <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-[400] bg-white text-red-700 px-4 py-3 rounded-lg border border-red-100 shadow-xl text-sm font-medium flex items-center gap-2 animate-in fade-in slide-in-from-top-2 max-w-[90%]">
+            <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-[400] bg-white text-red-700 px-4 py-3 rounded-lg border border-red-100 shadow-xl text-sm font-medium flex items-center gap-2 max-w-[90%]">
                 <AlertCircle className="w-4 h-4 flex-shrink-0" />
                 <span>{permissionError}</span>
                 <button onClick={() => setPermissionError(null)} className="ml-2 text-slate-400 hover:text-slate-600 p-1">×</button>

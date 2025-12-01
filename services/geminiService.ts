@@ -1,10 +1,6 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { Standard, ComparisonResult } from '../types';
 
-// Initialize the API client
-// Note: process.env.API_KEY is guaranteed to be available in this environment.
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-
 const SYSTEM_INSTRUCTION = `
 You are a world-class expert on international amusement attraction safety standards. 
 You specialize in standards from organizations like ASTM International (Committee F24), ISO (International Organization for Standardization), CEN (European Standards/EN), and SAC (GB Standards like GB 8408).
@@ -15,8 +11,31 @@ Do not invent standards. Only provide existing, published standards.
 Provide a clear title, the standard code (e.g., "ASTM F2291-24"), the organization, a concise description, and specifically why it is relevant to the user's query.
 `;
 
+// Lazy initialization to prevent app crash on load if API Key is missing
+let aiInstance: GoogleGenAI | null = null;
+
+const getAI = () => {
+  if (!aiInstance) {
+    let key = '';
+    try {
+      // Safely access process.env to avoid ReferenceError in browsers
+      // Vite will replace 'process.env.API_KEY' string with the actual key during build
+      key = process.env.API_KEY || '';
+    } catch (e) {
+      console.warn("Environment variable access failed. API features may not work.");
+    }
+
+    if (!key) {
+      console.warn("Google Gemini API Key is missing. Search functionality will fail.");
+    }
+    aiInstance = new GoogleGenAI({ apiKey: key });
+  }
+  return aiInstance;
+};
+
 export const searchStandardsWithAI = async (query: string): Promise<Standard[]> => {
   try {
+    const ai = getAI();
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash",
       contents: `User Query: "${query}"
@@ -71,12 +90,13 @@ export const searchStandardsWithAI = async (query: string): Promise<Standard[]> 
 
   } catch (error) {
     console.error("Gemini Search Error:", error);
-    throw new Error("Failed to search standards. Please try again.");
+    throw new Error("Failed to search standards. Please verify API Key or connection.");
   }
 };
 
 export const explainStandardWithAI = async (standard: Standard): Promise<{ explanation: string, mermaid: string }> => {
   try {
+    const ai = getAI();
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash",
       contents: `Explain the standard "${standard.code}: ${standard.title}" in detail for an amusement park engineer. 
@@ -118,6 +138,7 @@ export const explainStandardWithAI = async (standard: Standard): Promise<{ expla
 
 export const compareStandardsWithAI = async (standards: string[], topic: string): Promise<ComparisonResult> => {
   try {
+    const ai = getAI();
     const stdString = standards.join(", ");
     
     const response = await ai.models.generateContent({
