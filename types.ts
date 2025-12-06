@@ -1,3 +1,4 @@
+
 export interface Standard {
   code: string;
   title: string;
@@ -30,7 +31,7 @@ export interface NewsItem {
   type: 'New Standard' | 'Adjustment' | 'Harmonization' | 'Committee';
 }
 
-export type ViewState = 'home' | 'search' | 'browse' | 'compare' | 'events' | 'news' | 'about';
+export type ViewState = 'home' | 'search' | 'browse' | 'compare' | 'events' | 'news' | 'about' | 'dashboard' | 'history';
 
 export interface SearchState {
   query: string;
@@ -50,4 +51,44 @@ export interface ComparisonResult {
   topic: string;
   summary: string;
   points: ComparisonPoint[];
+}
+
+// --- NEW TYPES FOR WORK DASHBOARD ---
+
+export interface Risk {
+  hazard: string;
+  consequence: string;
+  mitigation: string;
+  isoReference: string; // e.g. ISO 12100 5.4
+}
+
+export interface PhaseAnalysis {
+  phase: 'Design' | 'Manufacture' | 'Installation' | 'Operation' | 'Testing';
+  applicableStandards: string[]; // e.g. ["ASTM F2291-24 Sec 6", "EN 13814-1"]
+  keyRequirements: string[];
+  criticalCheckpoints: string[];
+}
+
+export interface AnalysisReport {
+  projectTitle: string;
+  summary: string;
+  riskAssessment: Risk[];
+  phases: PhaseAnalysis[];
+  timestamp: string;
+}
+
+export interface Project {
+  id: string;
+  title: string;
+  description: string;
+  dateCreated: string;
+  report: AnalysisReport;
+}
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  avatar?: string;
+  isPro?: boolean;
 }

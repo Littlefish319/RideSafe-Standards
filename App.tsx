@@ -1,18 +1,74 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import Hero from './components/Hero';
 import AISearch from './components/AISearch';
 import Browse from './components/Browse';
 import Compare from './components/Compare';
 import Events from './components/Events';
 import News from './components/News';
+import WorkDashboard from './components/WorkDashboard';
+import History from './components/History';
+import AuthModal from './components/AuthModal';
 import StandardModal from './components/StandardModal';
-import { ViewState, Standard } from './types';
-import { RollerCoaster, Search, Menu, X, BookOpen, Info, Scale, CalendarDays, Newspaper, Copyright, CheckCircle2 } from 'lucide-react';
+import { ViewState, Standard, User, Project } from './types';
+import { RollerCoaster, Search, Menu, X, BookOpen, Info, Scale, CalendarDays, Newspaper, Copyright, CheckCircle2, Briefcase, Clock, User as UserIcon, LogOut } from 'lucide-react';
 
 const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<ViewState>('home');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [selectedStandard, setSelectedStandard] = useState<Standard | null>(null);
+  
+  // Auth & Project State
+  const [user, setUser] = useState<User | null>(null);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [activeProject, setActiveProject] = useState<Project | null>(null);
+
+  // Load state from local storage on mount
+  useEffect(() => {
+    const savedUser = localStorage.getItem('rideSafeUser');
+    const savedProjects = localStorage.getItem('rideSafeProjects');
+    
+    if (savedUser) setUser(JSON.parse(savedUser));
+    if (savedProjects) setProjects(JSON.parse(savedProjects));
+  }, []);
+
+  const handleLogin = (userData: User) => {
+    setUser(userData);
+    localStorage.setItem('rideSafeUser', JSON.stringify(userData));
+  };
+
+  const handleLogout = () => {
+    setUser(null);
+    localStorage.removeItem('rideSafeUser');
+    navigateTo('home');
+  };
+
+  const handleSaveProject = (project: Project) => {
+    const updatedProjects = [project, ...projects];
+    setProjects(updatedProjects);
+    localStorage.setItem('rideSafeProjects', JSON.stringify(updatedProjects));
+  };
+
+  const handleDeleteProject = (id: string) => {
+    const updated = projects.filter(p => p.id !== id);
+    setProjects(updated);
+    localStorage.setItem('rideSafeProjects', JSON.stringify(updated));
+  };
+
+  const handleLoadProject = (project: Project) => {
+    setActiveProject(project);
+    navigateTo('dashboard');
+  };
+
+  const handleExportProject = (project: Project) => {
+    const blob = new Blob([JSON.stringify(project.report, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${project.title.replace(/\s+/g, '_')}_Report.json`;
+    a.click();
+  };
 
   const navigateTo = (view: ViewState) => {
     setCurrentView(view);
@@ -38,73 +94,46 @@ const App: React.FC = () => {
             </div>
             
             {/* Desktop Menu */}
-            <div className="hidden md:flex items-center space-x-2">
-              <button 
-                onClick={() => navigateTo('search')}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                  currentView === 'search' 
-                  ? 'text-blue-700 bg-blue-50 shadow-sm ring-1 ring-blue-100' 
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
-                }`}
-              >
-                <Search className="w-4 h-4" />
-                AI Search
+            <div className="hidden md:flex items-center space-x-1">
+              <button onClick={() => navigateTo('search')} className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${currentView === 'search' ? 'text-blue-700 bg-blue-50' : 'text-slate-600 hover:bg-slate-50'}`}>
+                <Search className="w-4 h-4" /> AI Search
               </button>
-              <button 
-                onClick={() => navigateTo('browse')}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                  currentView === 'browse' 
-                  ? 'text-blue-700 bg-blue-50 shadow-sm ring-1 ring-blue-100' 
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
-                }`}
-              >
+              <button onClick={() => navigateTo('dashboard')} className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${currentView === 'dashboard' ? 'text-blue-700 bg-blue-50' : 'text-slate-600 hover:bg-slate-50'}`}>
+                <Briefcase className="w-4 h-4" /> Work Dashboard
+              </button>
+              <div className="h-6 w-px bg-slate-200 mx-2"></div>
+              <button onClick={() => navigateTo('browse')} className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${currentView === 'browse' ? 'text-blue-700 bg-blue-50' : 'text-slate-600 hover:bg-slate-50'}`}>
                 <BookOpen className="w-4 h-4" />
-                Browse
               </button>
-              <button 
-                onClick={() => navigateTo('compare')}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                  currentView === 'compare' 
-                  ? 'text-blue-700 bg-blue-50 shadow-sm ring-1 ring-blue-100' 
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
-                }`}
-              >
+              <button onClick={() => navigateTo('compare')} className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${currentView === 'compare' ? 'text-blue-700 bg-blue-50' : 'text-slate-600 hover:bg-slate-50'}`}>
                 <Scale className="w-4 h-4" />
-                Compare
               </button>
-              <button 
-                onClick={() => navigateTo('events')}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                  currentView === 'events' 
-                  ? 'text-blue-700 bg-blue-50 shadow-sm ring-1 ring-blue-100' 
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
-                }`}
-              >
+              <button onClick={() => navigateTo('events')} className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${currentView === 'events' ? 'text-blue-700 bg-blue-50' : 'text-slate-600 hover:bg-slate-50'}`}>
                 <CalendarDays className="w-4 h-4" />
-                Events
               </button>
-              <button 
-                onClick={() => navigateTo('news')}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                  currentView === 'news' 
-                  ? 'text-blue-700 bg-blue-50 shadow-sm ring-1 ring-blue-100' 
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
-                }`}
-              >
+              <button onClick={() => navigateTo('news')} className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${currentView === 'news' ? 'text-blue-700 bg-blue-50' : 'text-slate-600 hover:bg-slate-50'}`}>
                 <Newspaper className="w-4 h-4" />
-                News
               </button>
-              <button 
-                onClick={() => navigateTo('about')}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                  currentView === 'about' 
-                  ? 'text-blue-700 bg-blue-50 shadow-sm ring-1 ring-blue-100' 
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
-                }`}
-              >
-                <Info className="w-4 h-4" />
-                About
-              </button>
+
+              <div className="ml-4 pl-4 border-l border-slate-200 flex items-center gap-2">
+                 {user ? (
+                   <div className="flex items-center gap-2">
+                      <button onClick={() => navigateTo('history')} className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${currentView === 'history' ? 'text-blue-700 bg-blue-50' : 'text-slate-600 hover:bg-slate-50'}`}>
+                        <Clock className="w-4 h-4" /> History
+                      </button>
+                      <button onClick={handleLogout} className="p-2 text-slate-400 hover:text-red-600 rounded-lg hover:bg-red-50">
+                        <LogOut className="w-4 h-4" />
+                      </button>
+                      <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xs ml-1">
+                        {user.name.charAt(0)}
+                      </div>
+                   </div>
+                 ) : (
+                   <button onClick={() => setIsAuthModalOpen(true)} className="flex items-center gap-2 px-4 py-2 bg-slate-900 text-white rounded-lg hover:bg-slate-800 transition-colors text-sm font-medium">
+                     <UserIcon className="w-4 h-4" /> Sign In
+                   </button>
+                 )}
+              </div>
             </div>
 
             {/* Mobile menu button */}
@@ -123,48 +152,27 @@ const App: React.FC = () => {
         {isMobileMenuOpen && (
           <div className="md:hidden bg-white border-t border-slate-100 shadow-lg absolute w-full z-50">
             <div className="px-4 pt-2 pb-4 space-y-1">
-              <button
-                onClick={() => navigateTo('search')}
-                className="w-full text-left flex items-center gap-3 px-3 py-3 rounded-lg text-base font-medium text-slate-700 hover:text-blue-600 hover:bg-blue-50"
-              >
-                <Search className="w-5 h-5" />
-                AI Search
+              <button onClick={() => navigateTo('dashboard')} className="w-full text-left flex items-center gap-3 px-3 py-3 rounded-lg text-base font-medium text-slate-700 hover:text-blue-600 hover:bg-blue-50">
+                <Briefcase className="w-5 h-5" /> Work Dashboard
               </button>
-              <button
-                onClick={() => navigateTo('browse')}
-                className="w-full text-left flex items-center gap-3 px-3 py-3 rounded-lg text-base font-medium text-slate-700 hover:text-blue-600 hover:bg-blue-50"
-              >
-                <BookOpen className="w-5 h-5" />
-                Browse
+              <button onClick={() => navigateTo('search')} className="w-full text-left flex items-center gap-3 px-3 py-3 rounded-lg text-base font-medium text-slate-700 hover:text-blue-600 hover:bg-blue-50">
+                <Search className="w-5 h-5" /> AI Search
               </button>
-              <button
-                onClick={() => navigateTo('compare')}
-                className="w-full text-left flex items-center gap-3 px-3 py-3 rounded-lg text-base font-medium text-slate-700 hover:text-blue-600 hover:bg-blue-50"
-              >
-                <Scale className="w-5 h-5" />
-                Compare
-              </button>
-              <button
-                onClick={() => navigateTo('events')}
-                className="w-full text-left flex items-center gap-3 px-3 py-3 rounded-lg text-base font-medium text-slate-700 hover:text-blue-600 hover:bg-blue-50"
-              >
-                <CalendarDays className="w-5 h-5" />
-                Events
-              </button>
-              <button
-                onClick={() => navigateTo('news')}
-                className="w-full text-left flex items-center gap-3 px-3 py-3 rounded-lg text-base font-medium text-slate-700 hover:text-blue-600 hover:bg-blue-50"
-              >
-                <Newspaper className="w-5 h-5" />
-                News
-              </button>
-              <button
-                onClick={() => navigateTo('about')}
-                className="w-full text-left flex items-center gap-3 px-3 py-3 rounded-lg text-base font-medium text-slate-700 hover:text-blue-600 hover:bg-blue-50"
-              >
-                <Info className="w-5 h-5" />
-                About
-              </button>
+              {user && (
+                <button onClick={() => navigateTo('history')} className="w-full text-left flex items-center gap-3 px-3 py-3 rounded-lg text-base font-medium text-slate-700 hover:text-blue-600 hover:bg-blue-50">
+                    <Clock className="w-5 h-5" /> History
+                </button>
+              )}
+              <div className="border-t border-slate-100 my-2"></div>
+              {!user ? (
+                 <button onClick={() => { setIsMobileMenuOpen(false); setIsAuthModalOpen(true); }} className="w-full text-left flex items-center gap-3 px-3 py-3 rounded-lg text-base font-medium text-slate-700 hover:text-blue-600 hover:bg-blue-50">
+                    <UserIcon className="w-5 h-5" /> Sign In
+                 </button>
+              ) : (
+                 <button onClick={handleLogout} className="w-full text-left flex items-center gap-3 px-3 py-3 rounded-lg text-base font-medium text-red-600 hover:bg-red-50">
+                    <LogOut className="w-5 h-5" /> Sign Out ({user.name})
+                 </button>
+              )}
             </div>
           </div>
         )}
@@ -174,11 +182,7 @@ const App: React.FC = () => {
       <main className="flex-grow">
         {currentView === 'home' && (
           <>
-            <Hero 
-              onStartSearching={() => navigateTo('search')} 
-              onBrowse={() => navigateTo('browse')} 
-            />
-            {/* Preview of Browse Section on Home */}
+            <Hero onStartSearching={() => navigateTo('search')} onBrowse={() => navigateTo('browse')} />
             <div className="bg-white py-16">
                 <div className="max-w-7xl mx-auto px-4">
                     <div className="text-center mb-12">
@@ -192,14 +196,27 @@ const App: React.FC = () => {
         )}
 
         {currentView === 'search' && <AISearch onSelectStandard={handleSelectStandard} />}
-        
         {currentView === 'browse' && <Browse onSelectStandard={handleSelectStandard} />}
-
         {currentView === 'compare' && <Compare />}
-        
         {currentView === 'events' && <Events />}
-        
         {currentView === 'news' && <News />}
+        
+        {currentView === 'dashboard' && (
+            <WorkDashboard 
+                user={user} 
+                onSaveProject={handleSaveProject} 
+                activeProject={activeProject} 
+            />
+        )}
+        
+        {currentView === 'history' && (
+            <History 
+                projects={projects} 
+                onLoadProject={handleLoadProject} 
+                onDeleteProject={handleDeleteProject}
+                onExport={handleExportProject}
+            />
+        )}
 
         {currentView === 'about' && (
           <div className="max-w-3xl mx-auto px-4 py-16 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -222,21 +239,14 @@ const App: React.FC = () => {
                 <li><strong>ISO 17842</strong> - Global safety standard.</li>
                 <li><strong>GB 8408</strong> - The National Standard of the People's Republic of China.</li>
               </ul>
-              <p className="mb-6">
-                <strong>Disclaimer:</strong> This application uses Artificial Intelligence to suggest relevant standards based on user descriptions. It is for educational and informational purposes only. Always refer to the official, purchased copies of standards from ASTM, ISO, or national bodies for legal and engineering compliance.
-              </p>
             </div>
           </div>
         )}
       </main>
 
-      {/* Modal for Details */}
-      {selectedStandard && (
-        <StandardModal 
-          standard={selectedStandard} 
-          onClose={() => setSelectedStandard(null)} 
-        />
-      )}
+      {/* Overlays */}
+      {selectedStandard && <StandardModal standard={selectedStandard} onClose={() => setSelectedStandard(null)} />}
+      {isAuthModalOpen && <AuthModal onClose={() => setIsAuthModalOpen(false)} onLogin={handleLogin} />}
 
       {/* Footer */}
       <footer className="bg-slate-900 text-slate-400 py-16">
@@ -259,7 +269,6 @@ const App: React.FC = () => {
                 <li><a href="https://www.astm.org/committee-f24" target="_blank" rel="noopener noreferrer" className="hover:text-blue-400 transition-colors">ASTM F24 Committee</a></li>
                 <li><a href="https://www.iso.org/committee/487900.html" target="_blank" rel="noopener noreferrer" className="hover:text-blue-400 transition-colors">ISO/TC 254</a></li>
                 <li><a href="https://www.iaapa.org/safety-security/standards-harmonization" target="_blank" rel="noopener noreferrer" className="hover:text-blue-400 transition-colors">IAAPA Safety</a></li>
-                <li><a href="https://naarso.com/" target="_blank" rel="noopener noreferrer" className="hover:text-blue-400 transition-colors">NAARSO</a></li>
               </ul>
             </div>
             <div>
@@ -267,18 +276,16 @@ const App: React.FC = () => {
               <ul className="space-y-3 text-sm">
                 <li><button onClick={() => navigateTo('about')} className="hover:text-blue-400 transition-colors text-left">Terms of Use</button></li>
                 <li><button onClick={() => navigateTo('about')} className="hover:text-blue-400 transition-colors text-left">Privacy Policy</button></li>
-                <li><button onClick={() => navigateTo('about')} className="hover:text-blue-400 transition-colors text-left">Disclaimer</button></li>
               </ul>
             </div>
           </div>
           <div className="mt-12 pt-8 border-t border-slate-800 text-center text-xs">
             <p className="font-semibold text-slate-300 mb-2 flex items-center justify-center gap-1">
               <Copyright className="w-3 h-3" /> 
-              {new Date().getFullYear()} RideSafe AI. Created by Xiaoyu Tang. All Rights Reserved.
+              {new Date().getFullYear()} RideSafe AI. All rights reserved by Xiaoyu Tang @YuNova.
             </p>
             <p className="text-slate-600 max-w-2xl mx-auto mb-2">
-              This application, its design, code structure, and original content are the intellectual property of Xiaoyu Tang. 
-              Unauthorized reproduction, redistribution, or cloning of this work is strictly prohibited.
+              Made by Xiaoyu Tang @YuNova LLC. This application, its design, code structure, and original content are the intellectual property of Xiaoyu Tang. 
             </p>
             <div className="flex items-center justify-center gap-4 mt-4">
                  <p className="text-slate-700">Not affiliated with ASTM, ISO, or CEN.</p>

@@ -1,5 +1,6 @@
+
 import { GoogleGenAI, Type } from "@google/genai";
-import { Standard, ComparisonResult } from '../types';
+import { Standard, ComparisonResult, AnalysisReport } from '../types';
 
 const SYSTEM_INSTRUCTION = `
 You are a world-class expert on international amusement attraction safety standards. 
@@ -20,7 +21,11 @@ const getAI = () => {
     try {
       // Safely access process.env to avoid ReferenceError in browsers
       // Vite will replace 'process.env.API_KEY' string with the actual key during build
-      key = process.env.API_KEY || '';
+      // @ts-ignore
+      if (typeof process !== 'undefined' && process.env && process.env.API_KEY) {
+         // @ts-ignore
+         key = process.env.API_KEY;
+      }
     } catch (e) {
       console.warn("Environment variable access failed. API features may not work.");
     }
@@ -90,7 +95,7 @@ export const searchStandardsWithAI = async (query: string): Promise<Standard[]> 
 
   } catch (error) {
     console.error("Gemini Search Error:", error);
-    throw new Error("Failed to search standards. Please verify API Key or connection.");
+    return [];
   }
 };
 
@@ -105,10 +110,11 @@ export const explainStandardWithAI = async (standard: Standard): Promise<{ expla
       2. Generate a valid Mermaid.js flowchart (graph TD) that visualizes the process, hierarchy, or logic of this standard. 
       
       CRITICAL MERMAID SYNTAX RULES:
+      - Return RAW string only. Do NOT use markdown code blocks like \`\`\`mermaid.
       - Start with "graph TD".
-      - Wrap ALL node labels in double quotes. Example: A["Start Process (ISO 12100)"] --> B["Next Step"]
-      - Do NOT use parentheses () inside node text unless the text is completely wrapped in quotes.
-      - Ensure the syntax is clean and valid.
+      - Wrap ALL node labels in double quotes. Example: A["Start Process"] --> B["Next Step"]
+      - ABSOLUTELY NO PARENTHESES inside node labels. Example: A["Risk ISO 12100"] instead of A["Risk (ISO 12100)"]
+      - Use hyphens for separation.
       
       Output Format: JSON.
       `,
@@ -186,5 +192,94 @@ export const compareStandardsWithAI = async (standards: string[], topic: string)
   } catch (error) {
     console.error("Gemini Compare Error:", error);
     throw new Error("Failed to generate comparison.");
+  }
+};
+
+export const analyzeProjectWithAI = async (
+  description: string, 
+  fileBase64: string | null, 
+  mimeType: string | null
+): Promise<AnalysisReport> => {
+  try {
+    const ai = getAI();
+    
+    const parts: any[] = [{ text: `
+      Role: You are a Senior Principal Engineer and Safety Inspector for amusement rides.
+      Task: Perform a complete engineering and safety analysis of the project described below.
+      
+      Project Description:
+      "${description}"
+      
+      If a document is attached, analyze its contents against global standards (ASTM F24, EN 13814, ISO 17842).
+      
+      REQUIREMENTS:
+      1. Start with a Preliminary Risk Assessment (ISO 12100 / ASTM F2291). Identify at least 3 major hazards.
+      2. Break down the project into 5 phases: Design, Manufacture, Installation, Operation, Testing.
+      3. For EACH phase, list the SPECIFIC standard codes (e.g., "ASTM F2291 Section 6.3") and specific technical rules/sayings applicable to this ride type.
+      
+      Output strictly in JSON.
+    `}];
+
+    if (fileBase64 && mimeType) {
+      parts.push({
+        inlineData: {
+          data: fileBase64,
+          mimeType: mimeType
+        }
+      });
+    }
+
+    const response = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: { parts },
+      config: {
+        systemInstruction: SYSTEM_INSTRUCTION,
+        responseMimeType: "application/json",
+        responseSchema: {
+          type: Type.OBJECT,
+          properties: {
+            projectTitle: { type: Type.STRING, description: "A generated title for this project" },
+            summary: { type: Type.STRING, description: "Executive summary of the analysis" },
+            riskAssessment: {
+              type: Type.ARRAY,
+              items: {
+                type: Type.OBJECT,
+                properties: {
+                  hazard: { type: Type.STRING },
+                  consequence: { type: Type.STRING },
+                  mitigation: { type: Type.STRING },
+                  isoReference: { type: Type.STRING },
+                },
+                required: ["hazard", "consequence", "mitigation", "isoReference"]
+              }
+            },
+            phases: {
+              type: Type.ARRAY,
+              items: {
+                type: Type.OBJECT,
+                properties: {
+                  phase: { type: Type.STRING, enum: ["Design", "Manufacture", "Installation", "Operation", "Testing"] },
+                  applicableStandards: { type: Type.ARRAY, items: { type: Type.STRING } },
+                  keyRequirements: { type: Type.ARRAY, items: { type: Type.STRING } },
+                  criticalCheckpoints: { type: Type.ARRAY, items: { type: Type.STRING } }
+                },
+                required: ["phase", "applicableStandards", "keyRequirements", "criticalCheckpoints"]
+              }
+            },
+            timestamp: { type: Type.STRING }
+          },
+          required: ["projectTitle", "summary", "riskAssessment", "phases", "timestamp"]
+        }
+      }
+    });
+
+    const jsonText = response.text;
+    if (!jsonText) throw new Error("Empty response from analysis");
+
+    return JSON.parse(jsonText) as AnalysisReport;
+
+  } catch (error) {
+    console.error("Gemini Analysis Error:", error);
+    throw new Error("Failed to analyze project.");
   }
 };

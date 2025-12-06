@@ -11,7 +11,7 @@ const MermaidDiagram: React.FC<MermaidDiagramProps> = ({ chart }) => {
   useEffect(() => {
     // Initialize once
     mermaid.initialize({ 
-        startOnLoad: false, // We render manually
+        startOnLoad: false,
         theme: 'neutral',
         securityLevel: 'loose',
         fontFamily: 'Inter',
@@ -22,13 +22,17 @@ const MermaidDiagram: React.FC<MermaidDiagramProps> = ({ chart }) => {
   useEffect(() => {
     const renderDiagram = async () => {
       if (containerRef.current && chart) {
-          // Clean container
           containerRef.current.innerHTML = '';
           const id = `mermaid-${Math.random().toString(36).substr(2, 9)}`;
           
           try {
-              // Ensure chart is treated as a string and trim whitespace
-              const cleanChart = chart.trim();
+              // 1. Clean Markdown code blocks if present
+              let cleanChart = chart.replace(/```mermaid/g, '').replace(/```/g, '').trim();
+              
+              // 2. Remove any lingering parentheses inside node names which break mermaid
+              // This is a heuristic: it replaces ( ) with [ ] or - if they are likely inside text
+              // But relying on AI prompt is better. We will just try to render what we get.
+              
               if (!cleanChart) return;
 
               const { svg } = await mermaid.render(id, cleanChart);
@@ -39,9 +43,10 @@ const MermaidDiagram: React.FC<MermaidDiagramProps> = ({ chart }) => {
               console.error("Mermaid rendering failed:", error);
               if (containerRef.current) {
                   containerRef.current.innerHTML = `
-                    <div class="flex flex-col items-center justify-center p-4 bg-red-50 rounded-lg border border-red-100 text-red-600 text-xs">
-                      <p class="font-semibold mb-1">Diagram Error</p>
-                      <p>Unable to render flow chart due to syntax issue.</p>
+                    <div class="flex flex-col items-center justify-center p-6 bg-slate-50 rounded-lg border border-slate-200 text-slate-500 text-sm">
+                      <p class="font-semibold mb-1 text-slate-700">Visual Diagram Unavailable</p>
+                      <p>The AI generated a chart structure that could not be rendered.</p>
+                      <p class="text-xs mt-2 text-slate-400">Error: Syntax mismatch</p>
                     </div>
                   `;
               }

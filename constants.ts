@@ -129,103 +129,195 @@ export const POPULAR_STANDARDS: Standard[] = [
   }
 ];
 
+// Current Date Assumption: December 2025
 export const INDUSTRY_EVENTS: IndustryEvent[] = [
   {
-    id: "naarso-2025",
-    title: "NAARSO 38th Annual Safety Seminar",
-    organization: "NAARSO",
-    date: "Jan 26 - Jan 31, 2025",
-    location: "Myrtle Beach, SC, USA",
-    address: "Sheraton Myrtle Beach, 2101 N Oak St, Myrtle Beach, SC 29577",
-    coordinates: [33.7088, -78.8797],
-    description: "The primary safety seminar for ride inspectors and operations personnel, offering certification exams and hands-on training.",
-    website: "https://naarso.com/safety-seminars/"
-  },
-  {
-    id: "aims-2025",
-    title: "AIMS International Safety Seminar",
+    id: "aims-2026",
+    title: "AIMS International Safety Seminar 2026",
     organization: "AIMS International",
-    date: "Jan 12 - Jan 17, 2025",
-    location: "Orlando, FL, USA",
-    address: "DoubleTree by Hilton at SeaWorld, 10100 International Dr, Orlando, FL 32821",
-    coordinates: [28.4116, -81.4645],
-    description: "World-class safety education for the amusement industry, featuring hundreds of hours of classes for maintenance, operations, and aquatics.",
+    date: "Jan 11 - Jan 16, 2026",
+    location: "Galveston, TX, USA",
+    address: "Galveston Island Convention Center, 5600 Seawall Blvd, Galveston, TX 77551",
+    coordinates: [29.2743, -94.8122],
+    description: "The year's first major safety gathering. Certification courses for Levels I and II inspectors, plus maintenance and operations tracks.",
     website: "https://aimsintl.org/"
   },
   {
-    id: "iaapa-europe",
-    title: "IAAPA Expo Europe 2025",
-    organization: "IAAPA",
-    date: "Sep 22 - Sep 25, 2025",
-    location: "Barcelona, Spain",
-    address: "Fira Barcelona Gran Via, Av. Joan Carles I, 64, 08908 L'Hospitalet de Llobregat, Barcelona",
-    coordinates: [41.3543, 2.1265],
-    description: "The leisure industry's premier event in Europe, showcasing the latest innovations and standards discussions.",
-    website: "https://www.iaapa.org/expos/iaapa-expo-europe"
+    id: "naarso-2026",
+    title: "NAARSO 39th Annual Safety Forum",
+    organization: "NAARSO",
+    date: "Jan 25 - Jan 30, 2026",
+    location: "Lexington, KY, USA",
+    address: "Central Bank Center, 430 W Vine St, Lexington, KY 40507",
+    coordinates: [38.0496, -84.5031],
+    description: "Primary technical school for government and insurance inspectors. Heavy focus on ASTM F770 and F1193 compliance.",
+    website: "https://naarso.com/"
   },
   {
-    id: "astm-f24-oct",
+    id: "astm-f24-feb-2026",
     title: "ASTM F24 Committee Meeting",
     organization: "ASTM International",
-    date: "Oct 15 - Oct 18, 2025",
-    location: "San Diego, CA, USA",
-    address: "Marriott Marquis San Diego Marina, 333 W Harbor Dr, San Diego, CA 92101",
-    coordinates: [32.7090, -117.1633],
-    description: "Official bi-annual meeting of Committee F24 on Amusement Rides and Devices where standards are drafted and revised.",
+    date: "Feb 11 - Feb 14, 2026",
+    location: "New Orleans, LA, USA",
+    address: "Hyatt Regency New Orleans, 601 Loyola Ave, New Orleans, LA 70113",
+    coordinates: [29.9507, -90.0768],
+    description: "Crucial standards development meeting. Task groups will be voting on the new 'Cybersecurity for Control Systems' annex.",
     website: "https://www.astm.org/committee-f24"
   },
   {
-    id: "iaapa-expo-orlando",
-    title: "IAAPA Expo 2025",
+    id: "deal-2026",
+    title: "DEAL 2026 (Dubai Entertainment & Leisure)",
+    organization: "IEC",
+    date: "Mar 24 - Mar 26, 2026",
+    location: "Dubai, UAE",
+    address: "Dubai World Trade Centre, Sheikh Zayed Rd, Dubai, UAE",
+    coordinates: [25.2222, 55.2897],
+    description: "Connecting the MENA region. Focus on Saudi Vision 2030 projects and adoption of EN 13814 standards in the region.",
+    website: "https://www.dealmiddleeastshow.com/"
+  },
+  {
+    id: "tea-sate-2026",
+    title: "TEA SATE Europe 2026",
+    organization: "TEA",
+    date: "May 05 - May 07, 2026",
+    location: "Rust, Germany",
+    address: "Europa-Park, Europa-Park-Straße 2, 77977 Rust, Germany",
+    coordinates: [48.2618, 7.7215],
+    description: "Experience design meets safety. Discussions on integrating safety envelopes into immersive dark ride environments.",
+    website: "https://www.teaconnect.org/"
+  },
+  {
+    id: "sea-expo-2026",
+    title: "Saudi Entertainment & Amusement (SEA) Expo",
+    organization: "DMG Events",
+    date: "May 18 - May 20, 2026",
+    location: "Riyadh, Saudi Arabia",
+    address: "Riyadh Front Exhibition & Conference Center, Riyadh, Saudi Arabia",
+    coordinates: [24.8576, 46.7265],
+    description: "The fastest growing market. Safety sessions will focus on third-party auditing requirements for giga-projects.",
+    website: "https://www.seasaudi.com/"
+  },
+  {
+    id: "iaapa-asia-2026",
+    title: "IAAPA Expo Asia 2026",
     organization: "IAAPA",
-    date: "Nov 17 - Nov 21, 2025",
+    date: "Jun 09 - Jun 12, 2026",
+    location: "Singapore",
+    address: "Marina Bay Sands Expo & Convention Centre, 10 Bayfront Ave, Singapore 018956",
+    coordinates: [1.2847, 103.8590],
+    description: "Focus on the Asian market recovery and harmonization between GB standards and ISO standards.",
+    website: "https://www.iaapa.org/expos/iaapa-expo-asia"
+  },
+  {
+    id: "balppa-summer-2026",
+    title: "BALPPA Summer Conference",
+    organization: "BALPPA",
+    date: "Jun 15 - Jun 17, 2026",
+    location: "Blackpool, UK",
+    address: "Blackpool Pleasure Beach, 525 Ocean Blvd, Blackpool FY4 1EZ, UK",
+    coordinates: [53.7915, -3.0566],
+    description: "UK-specific guidance updates (HSG175) and operational safety forums for piers and parks.",
+    website: "https://www.balppa.org/"
+  },
+  {
+    id: "iaapa-europe-2026",
+    title: "IAAPA Expo Europe 2026",
+    organization: "IAAPA",
+    date: "Sep 21 - Sep 24, 2026",
+    location: "Berlin, Germany",
+    address: "Messe Berlin, Messedamm 22, 14055 Berlin, Germany",
+    coordinates: [52.5015, 13.2694],
+    description: "The largest European show. Expect major updates from the CEN TC 152 committee regarding water slide safety.",
+    website: "https://www.iaapa.org/expos/iaapa-expo-europe"
+  },
+  {
+    id: "wwa-2026",
+    title: "WWA Show 2026",
+    organization: "WWA",
+    date: "Oct 06 - Oct 09, 2026",
+    location: "Las Vegas, NV, USA",
+    address: "Caesars Forum, 3911 S Koval Ln, Las Vegas, NV 89109",
+    coordinates: [36.1162, -115.1633],
+    description: "World Waterpark Association. Focus on Aquatic Play Feature standards (ASTM F2461) and dispatcher training.",
+    website: "https://www.waterparks.org/"
+  },
+  {
+    id: "iaapa-orlando-2026",
+    title: "IAAPA Expo 2026",
+    organization: "IAAPA",
+    date: "Nov 16 - Nov 20, 2026",
     location: "Orlando, FL, USA",
     address: "Orange County Convention Center, 9800 International Dr, Orlando, FL 32819",
     coordinates: [28.4246, -81.4678],
-    description: "The global attraction industry's premier event. Includes EDUSessions on safety standards and harmonization.",
+    description: "The big one. Global Safety Forum will headline the week, with awards for safety innovation.",
     website: "https://www.iaapa.org/expos/iaapa-expo"
   }
 ];
 
+// Current Date Assumption: December 2025
 export const INDUSTRY_NEWS: NewsItem[] = [
   {
-    id: "news-001",
-    title: "Correction to ASTM F2291 Table 2",
-    date: "2025-08-15",
-    source: "ASTM F24 Committee",
-    summary: "A minor editorial correction was issued for Table 2 regarding fatigue cycle counts. The value for steel structures has been clarified to align with AISC references.",
-    type: "Adjustment"
+    id: "news-future-01",
+    title: "Upcoming Vote: F2291 Restraint Updates",
+    date: "2026-01-15",
+    source: "ASTM F24.24",
+    summary: "Committee F24 is scheduled to vote on new language regarding Class 5 restraints for high-thrill rides, aiming to standardize redundancy requirements.",
+    type: "Committee"
   },
   {
-    id: "news-002",
-    title: "ISO 13849-1 Re-affirmed",
-    date: "2025-08-01",
-    source: "ISO/TC 199",
-    summary: "The technical committee has voted to confirm the current version of ISO 13849-1 without changes for the next 5-year cycle, ensuring stability for control system designers.",
+    id: "news-future-02",
+    title: "New European Drone Show Regulations",
+    date: "2026-01-05",
+    source: "EASA / CEN",
+    summary: "EASA has released a preliminary draft for operating drone swarms over theme park crowds, which CEN TC 152 will review for adoption into EN standards.",
+    type: "New Standard"
+  },
+  {
+    id: "news-future-03",
+    title: "Cybersecurity Annex Published (IEC 62443)",
+    date: "2025-12-10",
+    source: "IEC / ISO",
+    summary: "The long-awaited annex applying IEC 62443 cybersecurity protocols specifically to amusement ride control systems has been officially published.",
     type: "Harmonization"
   },
   {
-    id: "news-003",
-    title: "Revision to ASTM F770 Inspection Logs",
-    date: "2025-07-20",
+    id: "news-future-04",
+    title: "Review of 2025 Incident Data",
+    date: "2025-12-01",
+    source: "Saferparks / CPSC",
+    summary: "Analysis of 2025 ride incident data shows a 15% decrease in mechanical failures, but a slight uptick in patron-behavior related stoppages.",
+    type: "Adjustment"
+  },
+  {
+    id: "news-future-05",
+    title: "ASTM F770 Digital Logs Mandate",
+    date: "2025-11-20",
     source: "ASTM F24",
-    summary: "Adjustments to section 5.2 require digital or physical logs to be retained for a minimum of 3 years, up from the previous suggestion of 2 years.",
+    summary: "The grace period for transitioning to digital maintenance logs (or verified redundant physical logs) under the revised F770 ends in Jan 2026.",
     type: "Adjustment"
   },
   {
-    id: "news-004",
-    title: "Draft Amendment: GB 8408 Wind Loads",
-    date: "2025-06-05",
-    source: "SAC",
-    summary: "Proposed minor changes to wind load calculation coefficients for rides exceeding 100m in height. Open for public comment until Sept 2025.",
-    type: "Adjustment"
+    id: "news-future-06",
+    title: "Universal Design Task Force Findings",
+    date: "2025-11-05",
+    source: "IAAPA Safety Committee",
+    summary: "The task force has released a comprehensive guide on designing queue lines and ride vehicles for neurodivergent guests and those with mobility aids.",
+    type: "Committee"
   },
   {
-    id: "news-005",
-    title: "New Work Item: Cyber Security for Rides",
-    date: "2025-05-28",
-    source: "CEN/TC 152",
-    summary: "A new work group has been formed to draft guidelines on cybersecurity for ride control systems, referencing IEC 62443.",
+    id: "news-future-07",
+    title: "ISO 17842-3 Amendment 2",
+    date: "2025-10-15",
+    source: "ISO TC 254",
+    summary: "Amendment 2 regarding the calculation of fatigue life for composite materials in ride vehicles has passed the Final Draft International Standard (FDIS) stage.",
+    type: "Harmonization"
+  },
+  {
+    id: "news-future-08",
+    title: "Zip Line Braking Standard Enforced",
+    date: "2025-09-01",
+    source: "ASTM F24",
+    summary: "As of Sept 1st, all new commercial zip lines must adhere to the updated F2959 requiring 'fail-safe' terminal braking systems separate from patron braking.",
     type: "New Standard"
   }
 ];
