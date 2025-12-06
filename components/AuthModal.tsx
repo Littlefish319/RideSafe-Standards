@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { X, Mail, Apple, ArrowRight, Lock, CheckCircle } from 'lucide-react';
+import { X, Mail, Apple, ArrowRight, Lock } from 'lucide-react';
 
 interface AuthModalProps {
   onClose: () => void;

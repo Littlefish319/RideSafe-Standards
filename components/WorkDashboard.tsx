@@ -10,7 +10,6 @@ import {
   Loader2, 
   AlertTriangle, 
   CheckCircle2, 
-  Save, 
   Download,
   PenTool,
   Factory,
@@ -53,7 +52,11 @@ const WorkDashboard: React.FC<WorkDashboardProps> = ({ user, onSaveProject, acti
     if (e.target.files && e.target.files[0]) {
       const selectedFile = e.target.files[0];
       setFile(selectedFile);
-      setFilePreview(URL.createObjectURL(selectedFile));
+      if (selectedFile.type.startsWith('image/')) {
+        setFilePreview(URL.createObjectURL(selectedFile));
+      } else {
+        setFilePreview(null);
+      }
     }
   };
 
@@ -175,12 +178,27 @@ const WorkDashboard: React.FC<WorkDashboardProps> = ({ user, onSaveProject, acti
                             className="border-2 border-dashed border-slate-300 rounded-lg p-6 text-center cursor-pointer hover:bg-slate-50 transition-colors"
                         >
                             {file ? (
-                                <div className="flex items-center justify-center gap-2 text-blue-600">
-                                    <CheckCircle2 className="w-5 h-5" />
-                                    <span className="text-sm font-medium truncate max-w-[200px]">{file.name}</span>
-                                    <button onClick={(e) => { e.stopPropagation(); setFile(null); }} className="p-1 hover:bg-blue-100 rounded-full">
-                                        <X className="w-4 h-4" />
-                                    </button>
+                                <div className="flex flex-col items-center justify-center gap-2 text-blue-600 w-full">
+                                    {filePreview && (
+                                        <div className="mb-2 relative h-32 w-full bg-slate-50 rounded-lg overflow-hidden border border-slate-200">
+                                            <img src={filePreview} alt="Preview" className="h-full w-full object-contain" />
+                                        </div>
+                                    )}
+                                    <div className="flex items-center gap-2">
+                                        <CheckCircle2 className="w-5 h-5" />
+                                        <span className="text-sm font-medium truncate max-w-[150px]">{file.name}</span>
+                                        <button 
+                                            onClick={(e) => { 
+                                                e.stopPropagation(); 
+                                                setFile(null); 
+                                                setFilePreview(null);
+                                                if (fileInputRef.current) fileInputRef.current.value = "";
+                                            }} 
+                                            className="p-1 hover:bg-blue-100 rounded-full"
+                                        >
+                                            <X className="w-4 h-4" />
+                                        </button>
+                                    </div>
                                 </div>
                             ) : (
                                 <div className="text-slate-500">

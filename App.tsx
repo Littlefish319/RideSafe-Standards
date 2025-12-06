@@ -11,7 +11,7 @@ import History from './components/History';
 import AuthModal from './components/AuthModal';
 import StandardModal from './components/StandardModal';
 import { ViewState, Standard, User, Project } from './types';
-import { RollerCoaster, Search, Menu, X, BookOpen, Info, Scale, CalendarDays, Newspaper, Copyright, CheckCircle2, Briefcase, Clock, User as UserIcon, LogOut } from 'lucide-react';
+import { RollerCoaster, Search, Menu, X, BookOpen, Scale, CalendarDays, Newspaper, Copyright, CheckCircle2, Briefcase, Clock, User as UserIcon, LogOut } from 'lucide-react';
 
 const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<ViewState>('home');
